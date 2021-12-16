@@ -37,14 +37,7 @@ nameForm.addEventListener('submit', (e) => {
     // reset the form values
     nameForm.reset();
     // display updated data in the current game div
-    let game = { 
-        name1: name1,
-        name2: name2,
-        score1: score1,
-        score2: score2,
-    };
-
-    displayCurrentGameEl(game);
+    displayCurrentGameEl();
 });
 
 
@@ -79,7 +72,7 @@ teamTwoSubtractButton.addEventListener('click', () => {
 finishGameButton.addEventListener('click', async() => {
     
     // create a new game using the current game state
-    
+    await createGame(name1, name2, score1, score2);
     // re-fetch the games to get the updated state
     
     // reassign the past games state to the re-fetched, updated games
@@ -99,11 +92,12 @@ logoutButton.addEventListener('click', () => {
 });
 
  // on load . . .
-window.addEventListener('', async() => {
+window.addEventListener('load', async() => {
     // fetch all games
     // check if there are any
     // if there are, set those as the initial state of pastGames
     // then display all the games (hint: call displayAllGames())
+    await displayAllGames();
 });
 
 
@@ -115,24 +109,31 @@ function displayCurrentGameEl() {
     // change the label to show team two's name;
     teamTwoLabel.textContent = name2;
     // call the render game function to create a game element
-    let game = { 
-        name1: name1,
-        name2: name2,
-        score1: score1,
-        score2: score2,
+    const currentGame = {
+        name1,
+        score1,
+        name2,
+        score2
     };
 
-    const gameEl = renderGame(game);
+    const gameEl = renderGame(currentGame);
     // append the element to the cleared out current game div
     currentGameEl.append(gameEl);
 }
 
 
-function displayAllGames() {
+async function displayAllGames() {
     // clear out the past games list in the DOM
-
+    pastGamesEl.textContent = '';
     // fetch and loop through the past games 
+    const games = await getGames();
+
+    for (let game of games) {
+        const gamesEl = renderGame(game);
+    
     // render and append a past game for each past game in state
+        pastGamesEl.append(gamesEl);
+    }
 }
 
 
